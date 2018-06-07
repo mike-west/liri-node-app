@@ -39,14 +39,23 @@ var myTweets = function () {
 var spotifySong = function (song) {
     spotifyClient.clientCredentialsGrant().then(
         function (data) {
-            console.log('The access token expires in ' + data.body['expires_in']);
-            console.log('The access token is ' + data.body['access_token']);
+            // console.log('The access token expires in ' + data.body['expires_in']);
+            // console.log('The access token is ' + data.body['access_token']);
 
             // Save the access token so that it's used in future calls
             spotifyClient.setAccessToken(data.body['access_token']);
-            spotifyClient.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE').then(
+            spotifyClient.searchTracks(song,{'limit': '5'}).then(
                 function (data) {
-                    console.log('Artist albums', data.body);
+                    // console.log(JSON.stringify(data.body));
+                    var items = data.body.tracks.items;
+                    // var album = items[1].album;
+                    // console.log(JSON.stringify(album));
+                    items.forEach(item => {
+                        var artist = item.artists[0].name;
+                        var link = item.external_urls.spotify;
+                        var albumName = item.name;
+                        console.log(artist, link, albumName);
+                    })
                 },
                 function (err) {
                     console.error(err);
@@ -77,7 +86,7 @@ if (operation === 'my-tweets') {
     if (process.argv.length === 4) {
         spotifySong(process.argv[3]);
     } else {
-        throw new Error('Must include a song title');
+        spotifySong("The Sign");
     }
     // } else if (operation === 'movie-this') {
     //     if (process.argv.length === 4) {
