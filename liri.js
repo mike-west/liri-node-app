@@ -3,6 +3,7 @@ var twitter = require("twitter");
 var spotify = require("spotify-web-api-node");
 var request = require("request");
 var jquery_param = require('jquery-param');
+var fs = require("fs");
 var Keys = require('./keys.js');
 
 var twitterClient = new twitter({
@@ -24,6 +25,11 @@ if (process.argv.length < 3) {
 }
 
 var operation = process.argv[2];
+var argumentsArr = process.argv.slice(3);
+var arguments = ""
+if (argumentsArr.length != 0) {
+    arguments = argumentsArr.join('+')
+}
 
 var myTweets = function () {
     // for security my screen name is saved as an env. var.
@@ -89,16 +95,16 @@ var movieThis = function (movie) {
     };
 
     var movieQuery = omdbBaseURL + jquery_param(params);
-    request(movieQuery, function(error, response, body) {
+    request(movieQuery, function (error, response, body) {
         if (!error && response.statusCode === 200) {
             var movieInfo = JSON.parse(body);
-            var imdbRating = movieInfo.Ratings.find(function (rating) { 
-                return rating.Source === "Internet Movie Database"; 
+            var imdbRating = movieInfo.Ratings.find(function (rating) {
+                return rating.Source === "Internet Movie Database";
             });
-            var rottenTomatoesRating = movieInfo.Ratings.find(function (rating) { 
-                return rating.Source === "Rotten Tomatoes"; 
+            var rottenTomatoesRating = movieInfo.Ratings.find(function (rating) {
+                return rating.Source === "Rotten Tomatoes";
             });
-            console.log("Title:        " + movieInfo.Title);
+            console.log("Title:           " + movieInfo.Title);
             console.log("Released:        " + movieInfo.Year);
             console.log("IMDB Rating:     " + imdbRating.Value);
             if (rottenTomatoesRating != null) {
@@ -111,29 +117,32 @@ var movieThis = function (movie) {
         }
     });
 
+};
+
+var doWhatItSays = function () {
+    // console.log('in doWhatItSays');
 }
 
-// var doWhatItSays = function () {
-//     console.log('in doWhatItSays');
-// }
-
-if (operation === 'my-tweets') {
-    myTweets();
-} else if (operation === 'spotify-this-song') {
-    if (process.argv.length === 4) {
-        spotifySong(process.argv[3]);
+var runMe = function (operation, arguments) {
+    if (operation === 'my-tweets') {
+        myTweets();
+    } else if (operation === 'spotify-this-song') {
+        if (arguments.length > 0) {
+            spotifySong(arguments);
+        } else {
+            spotifySong("The Sign");
+        }
+    } else if (operation === 'movie-this') {
+        if (arguments.length > 0) {
+            movieThis(arguments);
+        } else {
+            throw new Error('Must include a movie title');
+        }
+    } else if (operation === 'do-what-it-says') {
+        doWhatItSays();
     } else {
-        spotifySong("The Sign");
+        throw new Error('Invalid operation ' + operation);
     }
-} else if (operation === 'movie-this') {
-    if (process.argv.length === 4) {
-        movieThis(process.argv[3]);
-    } else {
-        throw new Error('Must include a movie title');
-    }
-    // } else if (operation === 'do-what-it-says') {
-    //     doWhatItSays();
-    // } else {
-    //     throw new Error('Invalid operation ' + operation);
-}
+};
 
+runMe(operation, arguments);
