@@ -20,19 +20,20 @@ Anything written to the terminal is also appended to a log.txt file n the same d
 
 #### Required:
 You must set up a .env file in the same directory with the following informaiton:
-# Spotify API keys
 
-SPOTIFY_ID=<spotify id>
-SPOTIFY_SECRET=<spotify secret>
+### Spotify API keys
 
-# Twitter API keys
+SPOTIFY_ID=spotify id
+SPOTIFY_SECRET=spotify secret
 
-TWITTER_CONSUMER_KEY=<twitter consumer key>
-TWITTER_CONSUMER_SECRET=<twitter secret>
+### Twitter API keys
 
-TWITTER_ACCESS_TOKEN_KEY=<twitter access token key>
-TWITTER_ACCESS_TOKEN_SECRET=<twitter access token secret>
+TWITTER_CONSUMER_KEY=twitter consumer key
+TWITTER_CONSUMER_SECRET=twitter secret
 
-TWITTER_SCREEN_NAME=<your twitter screen name>
+TWITTER_ACCESS_TOKEN_KEY=twitter access token key
+TWITTER_ACCESS_TOKEN_SECRET=twitter access token secret
+
+TWITTER_SCREEN_NAME=your twitter screen name
 
 All of these can be obtained at the Twitter and Spotify developers site
