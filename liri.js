@@ -31,17 +31,27 @@ if (argumentsArr.length != 0) {
     arguments = argumentsArr.join('+')
 }
 
+// logs to both console and log.txt, input should be a string.
+var logMe = function (logThis) {
+    console.log(logThis);
+    fs.appendFile("./log.txt", logThis + "\n", function(err) {
+        if (err) {
+            console.log(err);
+        }
+    })
+};
+
 var myTweets = function () {
     // for security my screen name is saved as an env. var.
     var params = { screen_name: Keys.userids.twitter };
     twitterClient.get('statuses/user_timeline', params, function (error, tweets, response) {
         if (!error) {
-            // console.log('tweets: ' + JSON.stringify(tweets));
+            // logMe('tweets: ' + JSON.stringify(tweets));
             for (let i = 0; i < Math.min(20, tweets.length); ++i) {
                 var date = tweets[i].created_at;
                 var msg = tweets[i].text;
-                console.log(date + ' ' + msg);
-                console.log(divider);
+                logMe(date + ' ' + msg);
+                logMe(divider);
             }
         }
     })
@@ -59,17 +69,18 @@ var spotifySong = function (song) {
                 function (data) {
                     var items = data.body.tracks.items; // items is an array of albums
                     var albums = data.body.tracks.items[0];
+                    var title = data.body.tracks.items[0].name
 
                     for (let i = 0; i < items.length; ++i) {
                         var album = items[i].album;
                         var artist = album.artists[0].name;
                         var link = album.external_urls.spotify;
                         var albumName = album.name;
-                        console.log("Song: " + song);
-                        console.log("Artist: " + artist);
-                        console.log("Link: " + link);
-                        console.log("Album: " + albumName);
-                        console.log(divider)
+                        logMe("Song: " + title);
+                        logMe("Artist: " + artist);
+                        logMe("Link: " + link);
+                        logMe("Album: " + albumName);
+                        logMe(divider)
                     }
                 },
                 function (err) {
@@ -78,7 +89,7 @@ var spotifySong = function (song) {
             )
         },
         function (err) {
-            console.log(
+            logMe(
                 'Something went wrong when retrieving an access token',
                 err.message
             );
@@ -104,16 +115,16 @@ var movieThis = function (movie) {
             var rottenTomatoesRating = movieInfo.Ratings.find(function (rating) {
                 return rating.Source === "Rotten Tomatoes";
             });
-            console.log("Title:           " + movieInfo.Title);
-            console.log("Released:        " + movieInfo.Year);
-            console.log("IMDB Rating:     " + imdbRating.Value);
+            logMe("Title:           " + movieInfo.Title);
+            logMe("Released:        " + movieInfo.Year);
+            logMe("IMDB Rating:     " + imdbRating.Value);
             if (rottenTomatoesRating != null) {
-                console.log("Rotten Tomatoes: " + rottenTomatoesRating.Value + " fresh");
+                logMe("Rotten Tomatoes: " + rottenTomatoesRating.Value + " fresh");
             }
-            console.log("Country:         " + movieInfo.Country);
-            console.log("Actors:          " + movieInfo.Actors);
-            console.log("Plot: " + movieInfo.Plot);
-            console.log(divider);
+            logMe("Country:         " + movieInfo.Country);
+            logMe("Actors:          " + movieInfo.Actors);
+            logMe("Plot: " + movieInfo.Plot);
+            logMe(divider);
         }
     });
 
@@ -122,10 +133,10 @@ var movieThis = function (movie) {
 var doWhatItSays = function () {
     fs.readFile("random.txt", "utf8", function(error, data) {
         if (error) {
-            return console.log(error);
+            return logMe(error);
         }
         var command_and_args = data.split(",");
-        console.log("do-what-it-says: " +command_and_args.join(' '));
+        logMe("do-what-it-says: " +command_and_args.join(' '));
         if (command_and_args.length ===2) {
             runMe(command_and_args[0], command_and_args[1]);
         } else {
