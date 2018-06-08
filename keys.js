@@ -13,5 +13,6 @@ exports.spotify = {
 };
 
 exports.userids = {
-  twitter: process.env.TWITTER_SCREEN_NAME
+  twitter: process.env.TWITTER_SCREEN_NAME,
+  omdb: "trilogy"
 }
