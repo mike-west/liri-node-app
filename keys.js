@@ -14,5 +14,5 @@ exports.spotify = {
 
 exports.userids = {
   twitter: process.env.TWITTER_SCREEN_NAME,
-  omdb: "trilogy"
+  omdb: process.env.OMDB_USER_ID
 }
