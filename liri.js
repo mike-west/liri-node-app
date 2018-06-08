@@ -1,6 +1,8 @@
 var loaded = require("dotenv").config();
 var twitter = require("twitter");
 var spotify = require("spotify-web-api-node");
+var request = require("request");
+var jquery_param = require('jquery-param');
 var Keys = require('./keys.js');
 
 var twitterClient = new twitter({
@@ -51,17 +53,17 @@ var spotifySong = function (song) {
                 function (data) {
                     var items = data.body.tracks.items; // items is an array of albums
                     var albums = data.body.tracks.items[0];
-                    
-                    for(let i=0; i < items.length; ++i) {
-                    var album = items[i].album;
-                    var artist = album.artists[0].name;
-                    var link = album.external_urls.spotify;
-                    var albumName = album.name;
-                    console.log("Song: " + song);
-                    console.log("Artist: " + artist);
-                    console.log("Link: " + link);
-                    console.log("Album: " + albumName);
-                    console.log(divider)
+
+                    for (let i = 0; i < items.length; ++i) {
+                        var album = items[i].album;
+                        var artist = album.artists[0].name;
+                        var link = album.external_urls.spotify;
+                        var albumName = album.name;
+                        console.log("Song: " + song);
+                        console.log("Artist: " + artist);
+                        console.log("Link: " + link);
+                        console.log("Album: " + albumName);
+                        console.log(divider)
                     }
                 },
                 function (err) {
@@ -76,12 +78,40 @@ var spotifySong = function (song) {
             );
         }
     )
-
 }
 
-// var movieThis = function (movie) {
-//     console.log('in movieThis for ' + movie);
-// }
+var movieThis = function (movie) {
+    var omdbBaseURL = "http://www.omdbapi.com/?";
+    var params = {
+        plot: "short",
+        apikey: Keys.userids.omdb,
+        t: movie
+    };
+
+    var movieQuery = omdbBaseURL + jquery_param(params);
+    request(movieQuery, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            var movieInfo = JSON.parse(body);
+            var imdbRating = movieInfo.Ratings.find(function (rating) { 
+                return rating.Source === "Internet Movie Database"; 
+            });
+            var rottenTomatoesRating = movieInfo.Ratings.find(function (rating) { 
+                return rating.Source === "Rotten Tomatoes"; 
+            });
+            console.log("Title:        " + movieInfo.Title);
+            console.log("Released:        " + movieInfo.Year);
+            console.log("IMDB Rating:     " + imdbRating.Value);
+            if (rottenTomatoesRating != null) {
+                console.log("Rotten Tomatoes: " + rottenTomatoesRating.Value + " fresh");
+            }
+            console.log("Country:         " + movieInfo.Country);
+            console.log("Actors:          " + movieInfo.Actors);
+            console.log("Plot: " + movieInfo.Plot);
+            console.log(divider);
+        }
+    });
+
+}
 
 // var doWhatItSays = function () {
 //     console.log('in doWhatItSays');
@@ -95,12 +125,12 @@ if (operation === 'my-tweets') {
     } else {
         spotifySong("The Sign");
     }
-    // } else if (operation === 'movie-this') {
-    //     if (process.argv.length === 4) {
-    //         movieThis(process.argv[3]);
-    //     } else {
-    //         throw new Error('Must include a movie title');
-    //     }
+} else if (operation === 'movie-this') {
+    if (process.argv.length === 4) {
+        movieThis(process.argv[3]);
+    } else {
+        throw new Error('Must include a movie title');
+    }
     // } else if (operation === 'do-what-it-says') {
     //     doWhatItSays();
     // } else {
