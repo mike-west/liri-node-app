@@ -120,7 +120,18 @@ var movieThis = function (movie) {
 };
 
 var doWhatItSays = function () {
-    // console.log('in doWhatItSays');
+    fs.readFile("random.txt", "utf8", function(error, data) {
+        if (error) {
+            return console.log(error);
+        }
+        var command_and_args = data.split(",");
+        console.log("do-what-it-says: " +command_and_args.join(' '));
+        if (command_and_args.length ===2) {
+            runMe(command_and_args[0], command_and_args[1]);
+        } else {
+            runMe(command_and_args[0], "");
+        }
+    })
 }
 
 var runMe = function (operation, arguments) {
@@ -136,7 +147,7 @@ var runMe = function (operation, arguments) {
         if (arguments.length > 0) {
             movieThis(arguments);
         } else {
-            throw new Error('Must include a movie title');
+            movieThis("Mr. Nobody");
         }
     } else if (operation === 'do-what-it-says') {
         doWhatItSays();
