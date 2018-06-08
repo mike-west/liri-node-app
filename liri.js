@@ -15,6 +15,8 @@ var spotifyClient = new spotify({
     clientSecret: Keys.spotify.secret
 })
 
+var divider = '-----------------------------------------';
+
 if (process.argv.length < 3) {
     throw new Error('Invalid number of arguments');
 }
@@ -22,6 +24,7 @@ if (process.argv.length < 3) {
 var operation = process.argv[2];
 
 var myTweets = function () {
+    // for security my screen name is saved as an env. var.
     var params = { screen_name: Keys.userids.twitter };
     twitterClient.get('statuses/user_timeline', params, function (error, tweets, response) {
         if (!error) {
@@ -30,32 +33,36 @@ var myTweets = function () {
                 var date = tweets[i].created_at;
                 var msg = tweets[i].text;
                 console.log(date + ' ' + msg);
-                console.log('-----------------------------------------');
+                console.log(divider);
             }
         }
     })
 };
 
 var spotifySong = function (song) {
+    // get an access token, usually good for about an hour but we get a fresh
+    // one every time.
     spotifyClient.clientCredentialsGrant().then(
         function (data) {
-            // console.log('The access token expires in ' + data.body['expires_in']);
-            // console.log('The access token is ' + data.body['access_token']);
-
-            // Save the access token so that it's used in future calls
+            // Save the access token so that it's used in the call
             spotifyClient.setAccessToken(data.body['access_token']);
-            spotifyClient.searchTracks(song,{'limit': '5'}).then(
+            // find the song.
+            spotifyClient.searchTracks(song, { 'limit': '5' }).then(
                 function (data) {
-                    // console.log(JSON.stringify(data.body));
-                    var items = data.body.tracks.items;
-                    // var album = items[1].album;
-                    // console.log(JSON.stringify(album));
-                    items.forEach(item => {
-                        var artist = item.artists[0].name;
-                        var link = item.external_urls.spotify;
-                        var albumName = item.name;
-                        console.log(artist, link, albumName);
-                    })
+                    var items = data.body.tracks.items; // items is an array of albums
+                    var albums = data.body.tracks.items[0];
+                    
+                    for(let i=0; i < items.length; ++i) {
+                    var album = items[i].album;
+                    var artist = album.artists[0].name;
+                    var link = album.external_urls.spotify;
+                    var albumName = album.name;
+                    console.log("Song: " + song);
+                    console.log("Artist: " + artist);
+                    console.log("Link: " + link);
+                    console.log("Album: " + albumName);
+                    console.log(divider)
+                    }
                 },
                 function (err) {
                     console.error(err);
