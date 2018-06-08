@@ -18,6 +18,8 @@
   "homepage": "https://github.com/mike-west/liri-node-app#readme",
   "dependencies": {
     "dotenv": "^6.0.0",
+    "jquery-param": "^1.0.1",
+    "request": "^2.87.0",
     "spotify-web-api-node": "^3.1.1",
     "twitter": "^1.7.1"
   }
