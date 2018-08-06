@@ -4,7 +4,7 @@
 This is a command line node app, written in Javascript, that interprets a command and performs it.
 
 #### node liri.js my-tweets
-Returns the most recent 5 tweets. 
+Returns the most recent 5 tweets from the users account. 
 
 #### node spotify-this-song <song-name>
 Returns information from spotify about this song.
@@ -16,7 +16,7 @@ Returns informaton from the Open Movie Database about the movie
 Reads a line from a random text file in the same directory and executes the command.
 
 #### Logging
-Anything written to the terminal is also appended to a log.txt file n the same directory.
+Anything written to the terminal is also appended to a log.txt file in the same directory.
 
 #### Required:
 You must set up a .env file in the same directory with the following informaiton:
