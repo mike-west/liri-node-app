@@ -20,8 +20,9 @@
     "dotenv": "^6.0.0",
     "fs": "0.0.1-security",
     "jquery-param": "^1.0.1",
-    "request": "^2.87.0",
+    "request": "^2.88.0",
     "spotify-web-api-node": "^3.1.1",
+    "superagent": "^3.8.3",
     "twitter": "^1.7.1"
   }
 }
